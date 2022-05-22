@@ -18,6 +18,7 @@
 
 #include "config.h"
 
+#   include <va/va_android.h>
 #if HAVE_VAAPI_X11
 #   include <va/va_x11.h>
 #endif
@@ -967,6 +968,20 @@ static int vaapi_device_create(AVHWDeviceContext *ctx, const char *device,
         }
     }
 #endif
+
+    if (!display) {
+        int mDisplay;
+        mDisplay = 0x18C34078;
+        display = vaGetDisplay(&mDisplay);
+        if (!display) {
+            av_log(ctx, AV_LOG_ERROR, "Cannot open a VA display "
+                   "from Android device %s.\n", device);
+            return AVERROR_UNKNOWN;
+        }
+
+        av_log(ctx, AV_LOG_VERBOSE, "Opened VA display via "
+               "Android device %s.\n", device);
+    }
 
     if (!display) {
         av_log(ctx, AV_LOG_ERROR, "No VA display found for "
