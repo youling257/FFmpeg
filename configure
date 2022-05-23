@@ -3361,7 +3361,6 @@ nm_default="nm -g"
 pkg_config_default=pkg-config
 ranlib_default="ranlib"
 strip_default="strip"
-version_script='--version-script'
 x86asmexe_default="nasm"
 windres_default="windres"
 nvcc_default="nvcc"
@@ -4421,6 +4420,8 @@ if test -n "$sysroot"; then
         gcc|llvm_gcc|clang)
             add_cppflags --sysroot="$sysroot"
             add_ldflags --sysroot="$sysroot"
+            add_cppflags -I"$sysinclude"
+            add_extralibs -L/system/vendor/lib
 # On Darwin --sysroot may be ignored, -isysroot always affects headers and linking
             add_cppflags -isysroot "$sysroot"
             add_ldflags -isysroot "$sysroot"
