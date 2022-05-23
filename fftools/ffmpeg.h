@@ -64,6 +64,14 @@ enum HWAccelID {
     HWACCEL_GENERIC,
 };
 
+typedef struct HWAccel {
+    const char *name;
+    int (*init)(AVCodecContext *s);
+    enum HWAccelID id;
+    enum AVPixelFormat pix_fmt;
+    enum AVHWDeviceType device_type;
+} HWAccel;
+
 typedef struct HWDevice {
     const char *name;
     enum AVHWDeviceType type;
@@ -375,6 +383,7 @@ typedef struct InputStream {
 
     /* hwaccel options */
     enum HWAccelID hwaccel_id;
+    enum HWAccelID active_hwaccel_id;
     enum AVHWDeviceType hwaccel_device_type;
     char  *hwaccel_device;
     enum AVPixelFormat hwaccel_output_format;
@@ -382,9 +391,11 @@ typedef struct InputStream {
     /* hwaccel context */
     void  *hwaccel_ctx;
     void (*hwaccel_uninit)(AVCodecContext *s);
+    int  (*hwaccel_get_buffer)(AVCodecContext *s, AVFrame *frame, int flags);
     int  (*hwaccel_retrieve_data)(AVCodecContext *s, AVFrame *frame);
     enum AVPixelFormat hwaccel_pix_fmt;
     enum AVPixelFormat hwaccel_retrieved_pix_fmt;
+    AVBufferRef *hw_frames_ctx;
 
     /* stats */
     // combined size of all the packets read
@@ -651,6 +662,8 @@ extern int auto_conversion_filters;
 extern const AVIOInterruptCB int_cb;
 
 extern const OptionDef options[];
+extern const HWAccel hwaccels[];
+extern AVBufferRef *hw_device_ctx;
 #if CONFIG_QSV
 extern char *qsv_device;
 #endif
@@ -685,6 +698,8 @@ int ffmpeg_parse_options(int argc, char **argv);
 
 int videotoolbox_init(AVCodecContext *s);
 int qsv_init(AVCodecContext *s);
+int vaapi_decode_init(AVCodecContext *avctx);
+int vaapi_device_init(const char *device);
 
 HWDevice *hw_device_get_by_name(const char *name);
 int hw_device_init_from_string(const char *arg, HWDevice **dev);
