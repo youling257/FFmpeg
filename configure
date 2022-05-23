@@ -7075,7 +7075,7 @@ print_enabled_components(){
 }
 
 print_enabled_components libavcodec/bsf_list.c AVBitStreamFilter bitstream_filters $BSF_LIST
-print_enabled_components libavformat/protocol_list.c URLProtocol url_protocols $PROTOCOL_LIST
+print_enabled_components /dev/null URLProtocol url_protocols $PROTOCOL_LIST
 
 if test -n "$WARNINGS"; then
     printf "\n%s%s$WARNINGS%s" "$warn_color" "$bold_color" "$reset_color"
