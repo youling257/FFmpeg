@@ -50,8 +50,10 @@ OBJS = allcodecs.o                                                      \
        utils.o                                                          \
        vorbis_parser.o                                                  \
        xiph.o                                                           \
+       ffmpeg_vaapi.o                                                  \
 
 # subsystems
+OBJS-$(CONFIG_VAAPI)            += ffmpeg_vaapi.o
 OBJS-$(CONFIG_AANDCTTABLES)            += aandcttab.o
 OBJS-$(CONFIG_AC3DSP)                  += ac3dsp.o ac3.o ac3tab.o
 OBJS-$(CONFIG_AUDIO_FRAME_QUEUE)       += audio_frame_queue.o
